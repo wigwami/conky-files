@@ -1,0 +1,159 @@
+--[[ conky configuration
+ ------------------------------
+	For conky variables and commands use the terminal command:   man conky
+ ------------------------------
+	This conky is simple. It shows time/date and two meters below: memory and disk usage. 
+#	
+	The double-dash-and-square-brackets surrounding this section signify a block comment.  
+	Any text inside these characters are ignored when creating the currently running conky. 	
+	Similarly, any individual line preceded by a double-dash is also a comment and is ignored.  
+#	
+	Comments are used for organizing this file and for giving descriptions and instructions.
+	Some options are currently 'commented out' and therefore are unused, but you can 
+	remove the double-dash that precedes a comment to activate that option.  
+#	
+	Find more info about the configuration options in the conky.config section at 
+	https://conky.cc/config_settings. Find more info about the variables in the 
+	conky.text section at https://conky.cc/variables.
+]]
+
+conky.config = {
+
+--[[ WINDOW BEHAVIOR AND APPEARANCE ]]
+
+	lua_load  = "~/.config/conky/draw_bg.lua",		-- these 2 lines call a lua script that sets the conky's BG color. 
+	lua_draw_hook_pre = "conky_draw_bg",
+	xinerama_head = 0,		-- specifies which monitor conky appears on. 0=laptop, 1=external monitor
+	own_window = true,
+	own_window_type = 'override',
+	own_window_transparent = true,
+	own_window_hints = 'undecorated,below,skip_taskbar,skip_pager,sticky',
+	own_window_colour = '678b8b',
+	
+--[[ END WINDOW BEHAVIOR AND APPEARANCE ]]
+
+
+
+--[[WINDOW SIZE AND PLACEMENT ]]
+
+		minimum_width = 550, minimum_height = 600,		-- width | height
+		maximum_width = 800,
+		alignment = 'bottom-left',
+		gap_x = 1350,															-- left | right
+		gap_y = -120,																	-- up | down
+		
+--[[ END WINDOW SIZE AND PLACEMENT ]]
+
+
+
+--[[ FONTS ]]
+
+    font = 'Open Sans=12',
+	--	Icons: ${font Conky Icons by Carelli:size=14}
+	use_xft = true,
+    xftalpha = 1,
+    override_utf8_locale = true,
+    uppercase = false,
+    
+--[[ END FONTS ]]
+
+
+
+--[[ COLORS ]]
+
+    draw_shades = false,
+    default_shade_color = 'eae2d9',
+    draw_outline = false,  		-- amplifies text if true
+    default_outline_color = 'eae2d9',
+    
+	--[[ Custom Colors 
+		There's a default, fallback color in case there are issues with the primary custom
+		colors (color4 and color8).  ]]
+	default_color = 'C0C0C0', -- Silver 
+	--	color4 = 'fdbeac', 		-- (An accent color (light salmon) for use against darker wallpaper backgrounds)
+	color4 = '793c3c', 			-- (An accent color (darker red) for use against lighter wallpaper backgrounds)
+	--	color8 = '515164', 	-- (The main font color for use against darker wallpaper backgrounds)
+	color8 = '334D5A', 		-- (The main font color for use against lighter bluish wallpaper backgrounds)
+    
+--[[ END COLORS ]]
+
+
+
+--[[ BORDERS ]]
+
+    draw_borders = false,
+    stippled_borders = 5,
+    border_inner_margin = 5,
+    border_outer_margin = 0,
+    border_width = 2,
+    draw_graph_borders = false,
+	default_graph_height = 15,
+	default_graph_width = 40,
+	
+--[[ END BORDERS ]]
+
+
+
+--[[ MISCELLANEOUS ]]
+
+    background = true,  		-- If true, Conky will be forked to background when started.
+
+	--[[ The following adds spaces around objects to prevent them from moving other 
+		objects. Options are right, left or none. Only works with a mono font.
+    use_spacer = 'none',
+
+	-- Subtract (file system) buffers from used memory?
+    no_buffers = true,
+
+	-- change GiB to G and MiB to M
+    short_units = true,
+
+	-- Imlib2 image cache size, in bytes. Default 4MiB Increase this value if you use
+	-- $image lots. Set to 0 to disable the image cache.
+    imlib_cache_size = 0,
+
+	-- Use the Xdbe extension? (eliminates flicker)
+    double_buffer = true,
+
+	-- Scale for all objects that show temperature. Either 'fahrenheit' or 'celsius'. 
+	temperature_unit = 'celsius',
+
+	-- Update interval in seconds
+    update_interval = 1,
+
+--[[ END MISCELLANEOUS ]]
+
+};
+
+
+
+--[[ CONKY.TEXT SECTION
+	Here we draw the contents of the conky. You can type text, refer to the colors above,
+	control font & weight, set offsets to control spacing, etc. 
+	Note: Comments in the conky.config section above are in the style of the Lua programming 
+	language; the double-dash. But here in this section, comments must be in an older format; 
+	the hash symbol (#). ]]
+
+conky.text = [=[
+#
+## SS-1 ##
+	${voffset 130}${alignc}${color8}${font Open Sans:style=Regular:pixelsize=120}${time %H:%M}${font}
+	${alignc}${color8}${font Open Sans:style=Semibold:pixelsize=24}${time %A} ${color4}${time %d} ${time %B} ${color8}${time %Y}${font}
+#
+## SS-2 ##
+	${voffset 33}${color8}${font Open Sans:style=Semibold:pixelsize=22}ram${font}${goto 70}${voffset -1}${color4}${font Open Sans:style=Semibold:pixelsize=22}${memperc}%${font}${goto 112}${voffset -14}${color8}${font Open Sans:style=Semibold:pixelsize=16}(${mem - cached} / ${memmax})${font}
+	${goto 112}${voffset -4}${color8}${membar 15,140}
+#
+## SS-3 ##
+	${voffset -17}	${goto 282}${color8}${voffset -30}${font Open Sans:style=Semibold:pixelsize=22}disk${font}${goto 332}${voffset -1}${color4}${font Open Sans:style=Semibold:pixelsize=22}${fs_used_perc}%${font}${goto 385}${voffset -13}${color8}${font Open Sans:style=Semibold:pixelsize=16}(${fs_used} / ${fs_size})${font}
+	${goto 385}${voffset -5}${color8}${fs_bar 15,140 /home}
+
+## SS-4 ##
+	${voffset -23}${goto 125}${color8}${font Open Sans:style=Semibold:pixelsize=22}cpu${font}${goto 170}${color4}${font Open Sans:style=Semibold:pixelsize=22}${cpu}%${font}${goto 217}${voffset 2}${color8}${cpubar 15,200}
+#	${goto 125}${voffset -10}${color8}${font Open Sans:style=Semibold:pixelsize=22}cpu1${font}${goto 185}${color4}${font Open Sans:style=Semibold:pixelsize=22}${cpu cpu1}%${font}${goto 228}${voffset 2}${color8}${cpubar cpu1 15,190}
+#	${goto 125}${voffset -10}${color8}${font Open Sans:style=Semibold:pixelsize=22}cpu2${font}${goto 185}${color4}${font Open Sans:style=Semibold:pixelsize=22}${cpu cpu2}%${font}${goto 228}${voffset 2}${color8}${cpubar cpu2 15,190}
+#
+#	${voffset 80}
+]=];
+
+--[[ END OF CONKY.TEXT SECTION ]]
